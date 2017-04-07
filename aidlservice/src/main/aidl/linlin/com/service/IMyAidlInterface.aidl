@@ -11,5 +11,5 @@ interface IMyAidlInterface {
      * and return values in AIDL.
      */
     int add( int num1 , int num2);
-    List<Student> addStudent(out Student student);//这里的in 一定需要的  或者out
+    List<Student> addStudent(in Student student);//这里的in 一定需要的  或者out
 }
