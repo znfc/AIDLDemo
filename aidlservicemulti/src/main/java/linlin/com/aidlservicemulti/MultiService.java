@@ -1,4 +1,4 @@
-package linlin.com.aidlservice;
+package linlin.com.aidlservicemulti;
 
 import android.app.Service;
 import android.content.Intent;
@@ -7,24 +7,21 @@ import android.os.RemoteException;
 
 import linlin.com.service.IMyAidlInterface;
 
-public class IRemoteService extends Service {
+public class MultiService extends Service {
 
-    private IBinder mBinder = new IMyAidlInterface.Stub() {
+    private IBinder iBinder = new IMyAidlInterface.Stub() {
         @Override
         public int add(int num1, int num2) throws RemoteException {
-            return num1 + num2;
+            return 0;
         }
 
         @Override
         public int multi(int a, int b) throws RemoteException {
-            return 0;
+            return a * b;
         }
-
     };
-
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        return iBinder;
     }
-
 }

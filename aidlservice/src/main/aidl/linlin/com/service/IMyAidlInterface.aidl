@@ -9,4 +9,5 @@ interface IMyAidlInterface {
      * and return values in AIDL.
      */
     int add( int num1 , int num2);
+    int multi( int a , int b);
 }

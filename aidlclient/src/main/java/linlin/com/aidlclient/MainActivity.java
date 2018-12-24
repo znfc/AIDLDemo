@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView result,text;
     private Button measure;
     private IMyAidlInterface iMyAidl;
+    private IMyAidlInterface iMyAidlMulti;
+
     private ServiceConnection conn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -30,6 +32,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onServiceDisconnected(ComponentName name) {
             iMyAidl = null;
+        }
+    };
+
+    private ServiceConnection connMulti = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            iMyAidlMulti = IMyAidlInterface.Stub.asInterface(service);
+            Log.i("TAG", "bind service connMulti successful");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            iMyAidlMulti = null;
         }
     };
     @Override
@@ -44,14 +59,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         text = (TextView) findViewById(R.id.text);
         measure.setOnClickListener(this);
         bindService();
+        bindServiceMulti();
     }
-
-
+int j = 0;
     @Override
     public void onClick(View v) {
         try {
-            int i = iMyAidl.add(Integer.parseInt(num1.getText().toString()),Integer.parseInt(num2.getText().toString()));
-            result.setText("" + i);
+            if(j%2 == 0) {
+                int i = iMyAidl.add(Integer.parseInt(num1.getText().toString()), Integer.parseInt(num2.getText().toString()));
+                result.setText("" + i);
+            }else {
+                int i = iMyAidlMulti.multi(Integer.parseInt(num1.getText().toString()), Integer.parseInt(num2.getText().toString()));
+                result.setText("" + i);
+            }
+            j++;
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -63,9 +84,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindService(intent,conn, Context.BIND_AUTO_CREATE);
     }
 
+    private void bindServiceMulti() {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("linlin.com.aidlservicemulti","linlin.com.aidlservicemulti.MultiService"));
+        bindService(intent,connMulti, Context.BIND_AUTO_CREATE);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(conn);
+        unbindService(connMulti);
     }
 }
